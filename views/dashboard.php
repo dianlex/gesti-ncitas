@@ -1,4 +1,4 @@
-section class="page-header">
+<section class="page-header">
  <div>
  <h1>Panel principal</h1>
  <p>Resumen operativo del sistema de citas.</p>

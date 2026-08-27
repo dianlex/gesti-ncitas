@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Core\Csrf;
+
 function e(mixed $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -17,11 +19,14 @@ function url(string $path = '/'): string
     if (preg_match("#^https?://#i", $path) === 1) {
         return $path;
     }
+    
     $base = app_base_path();
     $normalized = '/' . ltrim($path, '/');
+    
     if ($normalized == '/') {
-        return $base === '' ? '/' : $base . '/';
+        return $base == "" ? '/' : $base . '/';
     }
+    
     return $base . $normalized;
 }
 
@@ -42,9 +47,15 @@ function flash(string $key, ?string $message = null): ?string
         $_SESSION['_flash'][$key] = $message;
         return null;
     }
+    
     $value = $_SESSION['_flash'][$key] ?? null;
     unset($_SESSION['_flash'][$key]);
     return is_string($value) ? $value : null;
+}
+
+function csrf_field(): string
+{
+    return '<input type="hidden" name="_token" value="' . e(Csrf::token()) . '">';
 }
 
 function format_date(string $date): string

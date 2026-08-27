@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
-use DateTime;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
 final class SlotGenerator
 {
-    /**
-     * Genera una lista de franjas horarias entre dos horas.
-     *
-     * @param string $start Hora de inicio (formato HH:MM o HH:MM:SS)
-     * @param string $end Hora de fin (formato HH:MM o HH:MM:SS)
-     * @param int $minutes Duración de cada franja en minutos
-     * @return list<string> Lista de horas en formato HH:MM:SS
-     * @throws InvalidArgumentException Si los parámetros no son válidos
-     */
+    /** @return list<string> */
     public function generate(string $start = '08:00', string $end = '12:00', int $minutes = 20): array
     {
         if ($minutes <= 0 || $minutes > 720) {
@@ -47,23 +38,13 @@ final class SlotGenerator
         return $slots;
     }
 
-    /**
-     * Convierte un string de hora en un objeto DateTimeImmutable.
-     *
-     * @param string $time Hora en formato HH:MM o HH:MM:SS
-     * @return DateTimeImmutable
-     * @throws InvalidArgumentException Si el formato no es válido
-     */
     private function parseTime(string $time): DateTimeImmutable
     {
-        // Normaliza: si tiene 5 caracteres (HH:MM), agrega :00
         $normalized = strlen($time) === 5 ? $time . ':00' : $time;
         $parsed = DateTimeImmutable::createFromFormat('H:i:s', $normalized);
-
         if ($parsed === false || $parsed->format('H:i:s') !== $normalized) {
-            throw new InvalidArgumentException("La hora '{$time}' no tiene un formato válido.");
+            throw new InvalidArgumentException("La hora ($time) no tiene un formato válido.");
         }
-
         return $parsed;
     }
 }
