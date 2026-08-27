@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'formacion/gestion-citas',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'eb69af720f1b56dc1f1700daf58a1e8c8977791a',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'formacion/gestion-citas' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'eb69af720f1b56dc1f1700daf58a1e8c8977791a',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
