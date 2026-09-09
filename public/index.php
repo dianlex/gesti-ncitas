@@ -87,22 +87,20 @@ try {
     $router->post('/patients', [$patientController, 'store']);
     $router->post('/patients/{id}/activate', [$patientController, 'activate']);
     $router->post('/patients/{id}/deactivate', [$patientController, 'deactivate']);
+    $router->post('/patients/{id}/delete',[$patientController, 'delete']);
+
+
+    // Doctores
     $router->get('/doctors', [$doctorController, 'index']);
     $router->get('/doctors/create', [$doctorController, 'create']);
-    $router->post('/doctors', [$doctorController, 'store']);
+    $router->post('/doctors', [$doctorController, 'store']); 
     $router->get('/doctors/{id}/edit', [$doctorController, 'edit']);
     $router->post('/doctors/{id}/edit', [$doctorController, 'update']);
     $router->get('/patients', [$patientController, 'index']);
     $router->get('/patients/create', [$patientController, 'create']);
     $router->post('/patients', [$patientController, 'store']);
-    $router->get(
-    '/patients/{id}/edit',
-    [$patientController, 'edit']
-    );
-    $router->post(
-    '/patients/{id}',
-    [$patientController, 'update']
-    );
+    $router->get('/patients/{id}/edit',[$patientController, 'edit']  );
+    $router->post('/patients/{id}',[$patientController, 'update']    );
 
     // Citas
     $router->get('/appointments', [$appointmentController, 'index']);

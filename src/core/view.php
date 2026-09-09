@@ -8,7 +8,7 @@ use RuntimeException;
 
 final class View
 {
-    public static function render(string $template, array $data = []): void
+    public static function render(string $template, array $viewData = []): void
     {
         $root = dirname(__DIR__, 2) . '/views';
         $file = $root . '/' . $template . '.php';
@@ -17,7 +17,7 @@ final class View
             throw new RuntimeException("La vista {$template} no existe.");
         }
 
-        extract($data, EXTR_SKIP);
+        extract($viewData, EXTR_SKIP);
         ob_start();
         require $file;
         $content = (string) ob_get_clean();

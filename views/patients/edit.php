@@ -1,9 +1,4 @@
-<form
-    class="panel form-grid"
-    method="post"
-    action="<?= e(url('/patients/' . $id)) ?>"
-    novalidate
->
+<form class="panel form-grid" method="post" action="<?= e(url('/patients/' .$data['id'])) ?>" novalidate >
     <?= csrf_field() ?>
 
     <label for="document_type">Tipo de documento</label>
@@ -69,8 +64,6 @@
         Cancelar
     </a>
 
-    <button class="button primary" type="submit">
-        Actualizar paciente
-    </button>
+    <button class="button primary" type="submit">Actualizar paciente</button>
 
 </form>
