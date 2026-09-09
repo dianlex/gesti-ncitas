@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"Tests\\Domain\\SlotGeneratorTest::testGeneratesTwelveTwentyMinuteSlots":0.01,"Tests\\Domain\\SlotGeneratorTest::testRejectsAnInvalidRange":0.001}}

@@ -63,6 +63,26 @@ final class PatientController
  flash('success', 'Paciente registrado correctamente.');
  redirect('/patients');
  }
+ public function activate(string $id): void
+ {
+ Auth::requireLogin();
+ Csrf::requireValid($_POST['_token'] ?? null);
+ $changed = $this->patients->setActive((int) $id, true);
+ flash($changed ? 'success' : 'error', $changed
+ ? 'Paciente activado correctamente.'
+ : 'El paciente no existe o ya está activo.');
+ redirect('/patients');
+ }
+ public function deactivate(string $id): void
+ {
+ Auth::requireLogin();
+ Csrf::requireValid($_POST['_token'] ?? null);
+ $changed = $this->patients->setActive((int) $id, false);
+ flash($changed ? 'success' : 'error', $changed
+ ? 'Paciente inactivado correctamente.'
+ : 'El paciente no existe o ya está inactivo.');
+ redirect('/patients');
+ }
  private function validate(array $data): array
  {
  $errors = [];
@@ -93,5 +113,76 @@ DateTimeImmutable('today')) {
  $errors['email'] = 'Ingrese un correo válido.';
  }
  return $errors;
+
  }
+ public function edit(string $id): void{
+ Auth::requireLogin();
+ $patientId = (int) $id;
+ $patient = $this->patients->findById($patientId);
+ 
+ if ($patient === null) {
+    http_response_code(404);
+    echo 'Paciente no encontrado.';
+    return;
+ }
+
+ View::render('patients/edit', [
+    'title' => 'Editar paciente',
+   'id' => $patientId,
+    'data' => $patient,
+    'errors' => [],
+ ]);
+ 
+}
+public function update(string $id): void
+{
+ Auth::requireLogin();
+ Csrf::requireValid($_POST['_token'] ?? null);
+ $patientId = (int) $id;
+ $patient = $this->patients->findById($patientId);
+ if ($patient === null) {
+ http_response_code(404);
+ echo 'Paciente no encontrado.';
+ return;
+ }
+ $data = [
+ 'document_type' => strtoupper(trim((string) ($_POST['document_type'] ?? 'CC'))),
+ 'document_number' => strtoupper(trim((string) ($_POST['document_number'] ?? ''))),
+ 'first_name' => trim((string) ($_POST['first_name'] ?? '')),
+ 'last_name' => trim((string) ($_POST['last_name'] ?? '')),
+ 'birth_date' => trim((string) ($_POST['birth_date'] ?? '')),
+ 'sex' => strtoupper(trim((string) ($_POST['sex'] ?? ''))),
+ 'phone' => trim((string) ($_POST['phone'] ?? '')) ?: null,
+ 'email' => mb_strtolower(trim((string) ($_POST['email'] ?? ''))) ?: null,
+ 'active' => isset($_POST['active']) ? 1 : 0,
+ ];
+ $errors = $this->validate($data);
+ if ($errors !== []) {
+ View::render('patients/edit', [
+ 'title' => 'Editar paciente',
+ 'id' => $patientId,
+ 'data' => $data,
+ 'errors' => $errors,
+ ]);
+ return;
+ }
+ try {
+ $this->patients->update($patientId, $data);
+ } catch (PDOException $exception) {
+ if ($exception->getCode() === '23000') {
+ $errors['document_number'] =
+ 'Ya existe otro paciente con ese documento.';
+ View::render('patients/edit', [
+ 'title' => 'Editar paciente',
+ 'id' => $patientId,
+ 'data' => $data,
+ 'errors' => $errors,
+ ]);
+ return;
+ }
+ throw $exception;
+ }
+ flash('success', 'Paciente actualizado correctamente.');
+ redirect('/patients');
+}
 }

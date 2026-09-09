@@ -58,10 +58,10 @@ final class AppointmentController
         ];
 
         $errors = [];
-        $patient = $this->patients->findByDocument($form['patient_document']);
+        $patient = $this->patients->findActiveByDocument($form['patient_document']);
 
         if ($patient === null) {
-            $errors['patient_document'] = 'No existe un paciente con ese documento.';
+            $errors['patient_document'] = 'El paciente no existe o está inactivo.';
         }
 
         if ($this->doctors->findActive($form['doctor_id']) === null) {

@@ -3,7 +3,7 @@
  <a class="button primary" href="<?= e(url('/appointments/create')) ?>">Asignar cita</a>
 </section>
 <form class="search-form" method="get" action="<?= e(url('/appointments')) ?>">
- <label class="sr-only" for="document">Documento</label>
+ <!-- <label class="sr-only" for="document">Documento</label> -->
  <input id="document" name="document" value="<?= e($document) ?>" placeholder="Documento del paciente">
  <button class="button secondary" type="submit">Consultar</button>
  <?php if ($document !== ''): ?><a class="button secondary" href="<?= e(url('/appointments')) ?>">Limpiar</a><?php

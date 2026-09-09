@@ -6,6 +6,7 @@ use App\Domain\SlotGenerator;
 use App\Repository\AppointmentRepository;
 use App\Repository\DoctorRepository;
 use App\Repository\RoomRepository;
+use App\Repository\PatientRepository;
 use DateTimeImmutable;
 use DomainException;
 use PDOException;
@@ -18,6 +19,7 @@ $schedule **/
  private AppointmentRepository $appointments,
  private DoctorRepository $doctors,
  private RoomRepository $rooms,
+ private PatientRepository $patients,
  private SlotGenerator $slots,
  private array $schedule
  ) {
@@ -45,6 +47,9 @@ $schedule **/
  }
  public function create(array $data): int
  {
+ if (!$this->patients->isActive((int) $data['patient_id'])) {
+ throw new DomainException('El paciente no existe o está inactivo.');
+ }
  if (!in_array($data['appointment_time'], $this->allowedSlots(), true)) {
  throw new DomainException('La hora seleccionada no pertenece al horario permitido.');
  }

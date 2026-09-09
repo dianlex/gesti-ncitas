@@ -21,6 +21,7 @@ $errorFlash = flash('error');
  <nav aria-label="Navegación principal">
  <a href="<?= e(url('/')) ?>">Inicio</a>
  <a href="<?= e(url('/patients')) ?>">Pacientes</a>
+ <a href="<?= e(url('/doctors')) ?>">Médicos</a>
  <a href="<?= e(url('/appointments')) ?>">Citas</a>
  <a href="<?= e(url('/appointments/create')) ?>">Asignar cita</a>
  </nav>

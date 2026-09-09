@@ -18,6 +18,7 @@ use App\Repository\PatientRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use App\Service\AppointmentService;
+use App\Controller\DoctorController;
 
 // 1. Cargar la configuración
 $config = require dirname(__DIR__) . '/bootstrap/app.php';
@@ -46,6 +47,7 @@ try {
         $appointments,
         $doctors,
         $rooms,
+        $patients,
         new SlotGenerator(),
         $config['appointments']
     );
@@ -54,6 +56,7 @@ try {
     $authController = new AuthController($users);
     $dashboardController = new DashboardController($patients, $appointments);
     $patientController = new PatientController($patients);
+    $doctorController = new DoctorController($doctors);
     $appointmentController = new AppointmentController(
         $patients,
         $doctors,
@@ -82,6 +85,24 @@ try {
     $router->get('/patients', [$patientController, 'index']);
     $router->get('/patients/create', [$patientController, 'create']);
     $router->post('/patients', [$patientController, 'store']);
+    $router->post('/patients/{id}/activate', [$patientController, 'activate']);
+    $router->post('/patients/{id}/deactivate', [$patientController, 'deactivate']);
+    $router->get('/doctors', [$doctorController, 'index']);
+    $router->get('/doctors/create', [$doctorController, 'create']);
+    $router->post('/doctors', [$doctorController, 'store']);
+    $router->get('/doctors/{id}/edit', [$doctorController, 'edit']);
+    $router->post('/doctors/{id}/edit', [$doctorController, 'update']);
+    $router->get('/patients', [$patientController, 'index']);
+    $router->get('/patients/create', [$patientController, 'create']);
+    $router->post('/patients', [$patientController, 'store']);
+    $router->get(
+    '/patients/{id}/edit',
+    [$patientController, 'edit']
+    );
+    $router->post(
+    '/patients/{id}',
+    [$patientController, 'update']
+    );
 
     // Citas
     $router->get('/appointments', [$appointmentController, 'index']);
