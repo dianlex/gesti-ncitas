@@ -400,3 +400,14 @@ td {
     border: 1px solid var(--border);
     border-radius: 8px;
 }
+    .pagination { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+    .pagination-pages { display: inline-flex; align-items: center; gap: .35rem; }
+    .page-link { display: inline-flex; align-items: center; justify-content: center; min-width: 2.25rem; height:
+    2.25rem; padding: 0 .55rem; border: 1px solid var(--border); border-radius: 8px; background: white;
+    color: var(--text); font-weight: 700; text-decoration: none; }
+    .page-link:hover, .page-link:focus { border-color:
+    var(--primary); color: var(--primary); }
+    .page-link.is-current { background: var(--primary); border-color: var(--primary); color: white; }
+    .page-ellipsis { color: var(--muted); padding: 0 .15rem; }
+    .pagination-info { color: var(--muted); font-weight: 600; }
+    .button.is-disabled { opacity: .55; cursor: not-allowed; }

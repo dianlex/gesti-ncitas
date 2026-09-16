@@ -16,12 +16,26 @@ final class PatientController
    {
       Auth::requireLogin();
       $term = trim((string) ($_GET['q'] ?? ''));
-      View::render('patients/index', [
+      $perPage = 10;
+      $page = (int) ($_GET['page'] ?? 1);
+      if ($page < 1) {
+      $page = 1;
+      }
+      $result = $this->patients->search($term, $page, $perPage);
+      $total = $result['total'];
+      $totalPages = $total > 0 ? (int) ceil($total / $perPage) : 1;
+      View::render('patients/index',
+      [
       'title' => 'Pacientes',
-      'patients' => $this->patients->search($term),
-      'term' => $term,
-      ]);
+         'patients' => $result['items'],
+         'term' => $term,
+         'page' => $page,
+         'perPage' => $perPage,
+         'total' => $total,
+         'totalPages' => $totalPages,
+      ]);   
    }
+
    public function create(): void
    {
       Auth::requireLogin();
@@ -183,10 +197,11 @@ final class PatientController
       flash('success', 'Paciente actualizado correctamente.');
       redirect('/patients');
    }
-   public function delete(int $id): void
+   public function delete(string $id): void
    {
    Auth::requireLogin();
    Csrf::requireValid($_POST['_token'] ?? null);
+   $id = (int) $id;
    $patient = $this->patients->findById($id);
    if ($patient === null) {
    http_response_code(404);

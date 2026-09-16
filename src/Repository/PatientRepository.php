@@ -12,18 +12,24 @@ final class PatientRepository
     {
     }
 
-    public function search(string $term = ""): array
+    public function search(string $term, int $page = 1, int $perPage = 10): array
     {
-        $sql = 'SELECT * FROM patients';
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+        $offset = ($page - 1) * $perPage;
+
+        $where = '';
         $parameters = [];
 
         if ($term !== '') {
             $searchTerm = '%' . $term . '%';
-            $sql .= ' WHERE document_number LIKE :term_document
+            $where = ' WHERE (
+                document_number LIKE :term_document
                 OR first_name LIKE :term_first_name
                 OR last_name LIKE :term_last_name
                 OR phone LIKE :term_phone
-                OR CONCAT_WS(\' \', first_name, last_name) LIKE :term_full_name';
+                OR CONCAT_WS(\' \', first_name, last_name) LIKE :term_full_name
+            )';
             $parameters = [
                 'term_document' => $searchTerm,
                 'term_first_name' => $searchTerm,
@@ -34,16 +40,36 @@ final class PatientRepository
 
             $normalizedTerm = mb_strtolower($term);
             if ($normalizedTerm === 'activo' || $normalizedTerm === 'activa') {
-                $sql .= ' OR active = 1';
+                $where .= ' OR active = 1';
             } elseif ($normalizedTerm === 'inactivo' || $normalizedTerm === 'inactiva') {
-                $sql .= ' OR active = 0';
+                $where .= ' OR active = 0';
             }
         }
 
-        $sql .= ' ORDER BY last_name, first_name LIMIT 100';
-        $statement = $this->pdo->prepare($sql);
-        $statement->execute($parameters);
-        return $statement->fetchAll();
+        $countStmt = $this->pdo->prepare(
+            "SELECT COUNT(*) FROM patients {$where}"
+        );
+        $countStmt->execute($parameters);
+        $total = (int) $countStmt->fetchColumn();
+
+        $sql = "SELECT * FROM patients {$where}
+            ORDER BY last_name, first_name
+            LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($parameters as $name => $value) {
+        $stmt->bindValue(':' . $name, $value, PDO::PARAM_STR);
+        }
+
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return [
+        'items' => $stmt->fetchAll(),
+        'total' => $total,
+        ];
     }
 
     public function findByDocument(string $document): ?array
