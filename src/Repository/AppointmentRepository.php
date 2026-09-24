@@ -61,6 +61,27 @@ final class AppointmentRepository
         return $appointment === false ? null : $appointment;
     }
 
+    public function dailyAgenda(string $date): array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT a.appointment_time, a.status,
+                p.first_name AS patient_first_name,
+                p.last_name AS patient_last_name,
+                d.first_name AS doctor_first_name,
+                d.last_name AS doctor_last_name,
+                r.code AS room_code
+            FROM appointments a
+            JOIN patients p ON p.id = a.patient_id
+            JOIN doctors d ON d.id = a.doctor_id
+            JOIN rooms r ON r.id = a.room_id
+            WHERE a.appointment_date = :date
+            ORDER BY a.appointment_time ASC, a.id ASC'
+        );
+        $statement->execute(['date' => $date]);
+
+        return $statement->fetchAll();
+    }
+
     public function occupiedTimes(string $date, int $doctorId, int $roomId): array
     {
         $statement = $this->pdo->prepare(

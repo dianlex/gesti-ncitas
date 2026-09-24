@@ -22,7 +22,9 @@ $errorFlash = flash('error');
  <a href="<?= e(url('/')) ?>">Inicio</a>
  <a href="<?= e(url('/patients')) ?>">Pacientes</a>
  <a href="<?= e(url('/doctors')) ?>">Médicos</a>
+ <a href="<?= e(url('/rooms')) ?>">Consultorios</a>
  <a href="<?= e(url('/appointments')) ?>">Citas</a>
+ <a href="<?= e(url('/agenda')) ?>">Agenda</a>
  <a href="<?= e(url('/appointments/create')) ?>">Asignar cita</a>
  </nav>
  <div class="user-menu">

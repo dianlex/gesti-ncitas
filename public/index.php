@@ -19,6 +19,7 @@ use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use App\Service\AppointmentService;
 use App\Controller\DoctorController;
+use App\Controller\RoomController;
 
 // 1. Cargar la configuración
 $config = require dirname(__DIR__) . '/bootstrap/app.php';
@@ -57,6 +58,7 @@ try {
     $dashboardController = new DashboardController($patients, $appointments);
     $patientController = new PatientController($patients);
     $doctorController = new DoctorController($doctors);
+    $roomController = new RoomController($rooms);
     $appointmentController = new AppointmentController(
         $patients,
         $doctors,
@@ -96,6 +98,14 @@ try {
     $router->post('/doctors', [$doctorController, 'store']); 
     $router->get('/doctors/{id}/edit', [$doctorController, 'edit']);
     $router->post('/doctors/{id}/edit', [$doctorController, 'update']);
+    // Consultorios
+    $router->get('/rooms', [$roomController, 'index']);
+    $router->get('/rooms/create', [$roomController, 'create']);
+    $router->post('/rooms', [$roomController, 'store']);
+    $router->get('/rooms/{id}/edit', [$roomController, 'edit']);
+    $router->post('/rooms/{id}/edit', [$roomController, 'update']);
+    $router->post('/rooms/{id}/activate', [$roomController, 'activate']);
+    $router->post('/rooms/{id}/deactivate', [$roomController, 'deactivate']);
     $router->get('/patients', [$patientController, 'index']);
     $router->get('/patients/create', [$patientController, 'create']);
     $router->post('/patients', [$patientController, 'store']);
@@ -104,6 +114,7 @@ try {
 
     // Citas
     $router->get('/appointments', [$appointmentController, 'index']);
+    $router->get('/agenda', [$appointmentController, 'agenda']);
     $router->get('/appointments/create', [$appointmentController, 'create']);
     $router->post('/appointments', [$appointmentController, 'store']);
     $router->get('/appointments/{id}', [$appointmentController, 'show']);

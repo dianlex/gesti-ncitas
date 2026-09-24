@@ -37,6 +37,33 @@ final class AppointmentController
         ]);
     }
 
+    public function agenda(): void
+    {
+        Auth::requireLogin();
+
+        $requestedDate = trim((string) ($_GET['date'] ?? ''));
+        $date = $requestedDate !== ''
+            ? $requestedDate
+            : (new DateTimeImmutable('today'))->format('Y-m-d');
+        $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        $dateError = null;
+        $appointments = [];
+
+        if ($parsedDate === false || $parsedDate->format('Y-m-d') !== $date) {
+            $dateError = 'Seleccione una fecha válida.';
+        } else {
+            $appointments = $this->appointments->dailyAgenda($date);
+        }
+
+        View::render('appointments/agenda', [
+            'title' => 'Agenda diaria',
+            'date' => $date,
+            'parsedDate' => $dateError === null ? $parsedDate : null,
+            'appointments' => $appointments,
+            'dateError' => $dateError,
+        ]);
+    }
+
     public function create(): void
     {
         Auth::requireLogin();
